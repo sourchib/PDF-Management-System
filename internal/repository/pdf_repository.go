@@ -28,7 +28,7 @@ func (r *PdfRepository) FindByID(id int64) (*model.PdfFile, error) {
 	query := `
 		SELECT id, filename, original_name, filepath, size, status, created_at, updated_at, deleted_at
 		FROM pdf_files
-		WHERE id = $1 AND status != 'DELETED'
+		WHERE id = $1
 	`
 	var pdf model.PdfFile
 	err := r.DB.QueryRow(query, id).Scan(
@@ -66,8 +66,8 @@ func (r *PdfRepository) FindAll(status string, page, limit int) ([]model.PdfFile
 	// However, Task 4 says "Soft Delete... return error jika file sudah dalam status DELETED" (implied for delete action).
 	// For List, I will list ALL including DELETED unless filtered.
 
-	// Order by latest
-	query += " ORDER BY created_at DESC"
+	// Order by oldest (ASC) as requested
+	query += " ORDER BY created_at ASC"
 
 	// Pagination
 	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argId, argId+1)
