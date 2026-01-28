@@ -1,0 +1,23 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+bin/
+
+# Logs
+*.log
+
+# Dependency directories (if vendoring)
+vendor/
+
+# Environment variables
+.env
+
+# Uploads (keep directory structure but not files if desired, or ignore all)
+uploads/
+!uploads/.keep
+
+# IDEs
+.vscode/
+.idea/

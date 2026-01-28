@@ -1,0 +1,253 @@
+{
+	"info": {
+		"_postman_id": "pdf-management-system-id",
+		"name": "PDF Management System",
+		"description": "Koleksi API untuk test Backend Developer PDF Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Manager A\",\n    \"email\": \"manager@example.com\",\n    \"password\": \"securepass\",\n    \"address\": \"Jalan Proyek No. 1\",\n    \"phone_number\": \"08123456789\",\n    \"post_code\": \"12345\",\n    \"role_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"    pm.environment.set(\"jwt_token\", jsonData.data.token);",
+									"    console.log(\"Token updated\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"manager@example.com\",\n    \"password\": \"securepass\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PDF Operations",
+			"item": [
+				{
+					"name": "Generate Report PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Laporan Proyek Akhir Tahun\",\n    \"institution_name\": \"PT Maju Jaya\",\n    \"address\": \"Jl. Thamrin No. 88, Jakarta\",\n    \"phone\": \"(021) 555-0808\",\n    \"logo_url\": \"https://via.placeholder.com/150.png\",\n    \"content\": \"Laporan ini mencakup seluruh kegiatan proyek selama tahun fiskal 2025. Semua target tercapai.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf/generate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pdf/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List PDFs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pdf/list?page=1&limit=10&status=CREATED",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"list"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "CREATED",
+									"description": "Filter by status: CREATED, UPLOADED, DELETED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete PDF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pdf/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pdf",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
